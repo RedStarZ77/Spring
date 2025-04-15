@@ -1,23 +1,42 @@
 package kuznetsov.springpractice.controller;
 
 import kuznetsov.springpractice.model.Student;
+import kuznetsov.springpractice.service.StudentService;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/students")
+@AllArgsConstructor
 public class StudentController {
+
+    private final StudentService studentService;
 
     @GetMapping
     public List<Student> findAllStudents() {
-        return List.of(
-                Student.builder().firstName("Олег").email("oleg123@mail.ru").age(41).build(),
-                Student.builder().firstName("Вася").email("vasya123@mail.ru").age(35).build(),
-                Student.builder().firstName("Коля").email("kolya123@mail.ru").age(20).build()
-        );
+        return studentService.findAllStudents();
+    }
+
+    @PostMapping("save_student")
+    public Student saveStudent(@RequestBody Student student) {
+        return studentService.saveStudent(student);
+    }
+
+    @GetMapping("{email}")
+    public Student findByEmail(@PathVariable String email) {
+        return studentService.findByEmail(email);
+    }
+
+    @PutMapping("update_student")
+    public Student updateStudent(Student student) {
+        return studentService.updateStudent(student);
+    }
+
+    @DeleteMapping("delete_student/{email}")
+    public void deleteStudent(@PathVariable String email) {
+        studentService.deleteStudent(email);
     }
 }
